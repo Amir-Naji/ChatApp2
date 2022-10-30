@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Windows.Forms;
 using Helpers;
 
 namespace ChatClient;
@@ -11,6 +9,10 @@ public class ClientServer : IClientServer
 {
     private readonly IConverters _converters = new Converters();
     private TcpClient _client;
+    private Thread thread;
+    private delegate void SafeCallDelegate(string text);
+
+    private Action<string>  _safeCallDelegate;
 
     public ClientServer(TcpClient client)
     {
@@ -19,19 +21,25 @@ public class ClientServer : IClientServer
 
     public void ConnectToServer()
     {
-        IPAddress ip = IPAddress.Parse("127.0.0.1");
-        int port = 5000;
-        client = new TcpClient();
-        if (!client.Connected)
-            client.Connect(ip, port);
-        Console.WriteLine("client connected!!");
-        ns = client.GetStream();
-        thread = new Thread(o =>
-        {
-            ReceiveData((TcpClient)o, txtAllMessages);
-        });
+        var ip = IPAddress.Parse("127.0.0.1");
+        var port = 5000;
+        _client = new TcpClient();
+        if (!ClientConnect())
+            _client.Connect(ip, port);
 
-        thread.Start(client);
+        CreateThread();
+
+        // Need to change it to log file
+        Console.WriteLine("client connected!!");
+
+        //ns = _client.GetStream();
+    }
+
+    public void SendMessage(string message)
+    {
+        var ns = _client.GetStream();
+        var buffer = Encoding.ASCII.GetBytes(message);
+        ns.Write(buffer, 0, buffer.Length);
     }
 
     public bool ClientConnect()
@@ -39,61 +47,31 @@ public class ClientServer : IClientServer
         return _client.Connected;
     }
 
-    public async Task<string> TrySendMessageAsync(string message)
+    public void SetText(Action<string> safeCallDelegate)
     {
-        try
+        _safeCallDelegate = safeCallDelegate;
+    }
+
+    private void CreateThread()
+    {
+        thread = new Thread(o => { ReceiveData(o as TcpClient); });
+
+        thread.Start(_client);
+    }
+
+    private void ReceiveData(TcpClient client)
+    {
+        var ns = client.GetStream();
+        var receivedBytes = new byte[1024];
+        int byteCount;
+
+        while ((byteCount = ns.Read(receivedBytes, 0, receivedBytes.Length)) > 0)
         {
-            return await SendMessage(message);
-            //return sendMessage(message);
+            var v = Encoding.ASCII.GetString(receivedBytes, 0, byteCount);
+            _safeCallDelegate(v);
+
+            // Need to log in file
+            Console.Write(Encoding.ASCII.GetString(receivedBytes, 0, byteCount));
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return string.Empty;
-        }
-        //finally
-        //{
-        //    _client.Close();
-        //}
     }
-
-    private async Task<string> SendMessage(string message)
-    {
-        
-        await using var stream = _client.GetStream();
-        SendToServer(message, stream);
-        var returnValue = await _converters.StreamToString(stream);
-
-        return returnValue;
-    }
-
-    private void SendToServer(string message, Stream stream)
-    {
-        var messageBytes = _converters.StringMessageToByteArray(message);
-        stream.Write(messageBytes, 0, messageBytes.Length);
-    }
-
-    //public string sendMessage(string message)
-    //{
-    //    string response = "";
-    //    try
-    //    {
-    //        TcpClient client = new TcpClient("127.0.0.1", 1337); // Create a new connection  
-    //        client.NoDelay = true; // please check TcpClient for more optimization
-    //        // messageToByteArray- discussed later
-    //        byte[] messageBytes = _converters.StringMessageToByteArray(message);
-
-    //        using (NetworkStream stream = client.GetStream())
-    //        {
-    //            stream.Write(messageBytes, 0, messageBytes.Length);
-
-    //            // Message sent!  Wait for the response stream of bytes...
-    //            // streamToMessage - discussed later
-    //            response = _converters.StreamToString(stream).Result;
-    //        }
-    //        client.Close();
-    //    }
-    //    catch (Exception e) { Console.WriteLine(e.Message); }
-    //    return response;
-    //}
 }

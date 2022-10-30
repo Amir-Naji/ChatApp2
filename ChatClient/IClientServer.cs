@@ -6,5 +6,9 @@ public interface IClientServer
 
     bool ClientConnect();
 
-    Task<string> TrySendMessageAsync(string message);
+    void SendMessage(string message);
+
+    void SetText(Action<string> safeCallDelegate);
+
+    //Task<string> TrySendMessageAsync(string message);
 }
