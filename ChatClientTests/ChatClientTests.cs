@@ -14,7 +14,7 @@ public class ChatClientTests
     {
         await Init();
         client = new ClientServer(await server.Listener().AcceptTcpClientAsync());
-        client.ConnectToServer();
+        //client.ConnectToServer();
 
         Assert.IsTrue(client.ClientConnect());
     }

@@ -1,25 +1,22 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Helpers;
 
 namespace ChatClient;
 
 public class ClientServer : IClientServer
 {
-    private readonly IConverters _converters = new Converters();
     private TcpClient _client;
-    private Thread thread;
-    private delegate void SafeCallDelegate(string text);
+    private Thread _thread;
 
-    private Action<string>  _safeCallDelegate;
+    private Action<string> _safeCallDelegate;
 
     public ClientServer(TcpClient client)
     {
         _client = client;
     }
 
-    public void ConnectToServer()
+    public void ConnectToServer(string username)
     {
         var ip = IPAddress.Parse("127.0.0.1");
         var port = 5000;
@@ -31,8 +28,7 @@ public class ClientServer : IClientServer
 
         // Need to change it to log file
         Console.WriteLine("client connected!!");
-
-        //ns = _client.GetStream();
+        SendMessage($"Username>{username}");
     }
 
     public void SendMessage(string message)
@@ -54,9 +50,8 @@ public class ClientServer : IClientServer
 
     private void CreateThread()
     {
-        thread = new Thread(o => { ReceiveData(o as TcpClient); });
-
-        thread.Start(_client);
+        _thread = new Thread(o => { ReceiveData(o as TcpClient); });
+        _thread.Start(_client);
     }
 
     private void ReceiveData(TcpClient client)

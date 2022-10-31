@@ -2,7 +2,7 @@
 
 public interface IClientServer
 {
-    void ConnectToServer();
+    void ConnectToServer(string username);
 
     bool ClientConnect();
 

@@ -9,19 +9,26 @@ public class RemoteServerTests
     [TearDown]
     public void TearDown()
     {
-        server.Stop();
+        _server.Stop();
     }
 
-    private RemoteServer server;
+    private RemoteServer _server;
 
 
     [Test]
-    public async Task Start_NoInput_False()
+    public void Start_NoInput_False()
     {
-        server = new RemoteServer();
-        server.Start();
+        _server = new RemoteServer();
+        _server.Start();
 
-        Assert.IsFalse(server.ServerConnect());
+        Assert.IsFalse(_server.ServerConnect());
+    }
+
+    [Test]
+    public void ServerConnect_NoStartServer_Exception()
+    {
+        _server = new RemoteServer();
+        Assert.Throws<InvalidOperationException>(() => _server.ServerConnect());
     }
 
     //[Test]
@@ -33,33 +40,17 @@ public class RemoteServerTests
     //}
 
     [Test]
-    public async Task ReceiveMessage_NullInput_NullReferenceException()
+    public void Stop_NoInput_InvalidOperationException()
     {
-        await Init();
+        Init();
+        _server.Stop();
 
-        Assert.CatchAsync<NullReferenceException>(() => server.ReceiveMessage(null));
-    }
-
-    [Test]
-    public async Task ReceiveMessage_NewObject_InvalidOperationException()
-    {
-        await Init();
-
-        Assert.CatchAsync<InvalidOperationException>(() => server.ReceiveMessage(new TcpClient()));
-    }
-
-    [Test]
-    public async Task Stop_NoInput_InvalidOperationException()
-    {
-        await Init();
-        server.Stop();
-
-        Assert.Catch<InvalidOperationException>(() => server.ServerConnect());
+        Assert.Catch<InvalidOperationException>(() => _server.ServerConnect());
     }
 
     private async Task Init()
     {
-        server = new RemoteServer();
-        server.Start();
+        _server = new RemoteServer();
+        await _server.Start();
     }
 }

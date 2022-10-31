@@ -15,10 +15,10 @@ IConverters _converters = new Converters();
 //}
 
 
-TestServer.Run();
+//TestServer.Run();
 
-//var rs = new RemoteServer();
-//await rs.Start();
+var rs = new RemoteServer();
+await rs.Start();
 //Console.WriteLine("Server starting !");
 
 // IP Address to listen on. Loopback in this case

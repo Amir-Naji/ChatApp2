@@ -12,7 +12,6 @@ public partial class Form1 : Form
         InitializeComponent();
         txtSendMessage.Focus();
         txtSendMessage.Select();
-        _cs.ConnectToServer();
     }
 
     private void btnSendMessage_Click(object sender, EventArgs e)
@@ -29,8 +28,13 @@ public partial class Form1 : Form
     private void SendMessage()
     {
         _cs.SetText(SetText);
-        _cs.SendMessage(txtSendMessage.Text);
+        _cs.SendMessage(WholeMessage());
         txtSendMessage.Text = string.Empty;
+    }
+
+    private string WholeMessage()
+    {
+        return $"{txtUsername.Text}> {txtSendMessage.Text}";
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -48,5 +52,13 @@ public partial class Form1 : Form
         {
             txtAllMessages.Text += text;
         }
+    }
+
+    private void btnConnect_Click(object sender, EventArgs e)
+    {
+        _cs.SetText(SetText);
+        _cs.ConnectToServer(txtUsername.Text);
+        btnConnect.Enabled = false;
+        txtUsername.Enabled = false;
     }
 }

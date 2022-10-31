@@ -34,11 +34,14 @@ namespace ChatClient
             this.btnSendMessage = new System.Windows.Forms.Button();
             this.txtSendMessage = new System.Windows.Forms.TextBox();
             this.txtAllMessages = new System.Windows.Forms.TextBox();
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnSendMessage
             // 
-            this.btnSendMessage.Location = new System.Drawing.Point(77, 64);
+            this.btnSendMessage.Location = new System.Drawing.Point(77, 172);
             this.btnSendMessage.Name = "btnSendMessage";
             this.btnSendMessage.Size = new System.Drawing.Size(75, 23);
             this.btnSendMessage.TabIndex = 0;
@@ -49,7 +52,7 @@ namespace ChatClient
             // txtSendMessage
             // 
             this.txtSendMessage.AcceptsReturn = true;
-            this.txtSendMessage.Location = new System.Drawing.Point(77, 35);
+            this.txtSendMessage.Location = new System.Drawing.Point(77, 143);
             this.txtSendMessage.Name = "txtSendMessage";
             this.txtSendMessage.Size = new System.Drawing.Size(238, 23);
             this.txtSendMessage.TabIndex = 1;
@@ -57,17 +60,47 @@ namespace ChatClient
             // 
             // txtAllMessages
             // 
-            this.txtAllMessages.Location = new System.Drawing.Point(77, 106);
+            this.txtAllMessages.Location = new System.Drawing.Point(77, 210);
             this.txtAllMessages.Multiline = true;
             this.txtAllMessages.Name = "txtAllMessages";
             this.txtAllMessages.Size = new System.Drawing.Size(364, 194);
             this.txtAllMessages.TabIndex = 2;
+            // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(321, 35);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.TabIndex = 3;
+            this.btnConnect.Text = "Connect";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.AcceptsReturn = true;
+            this.txtUsername.Location = new System.Drawing.Point(77, 35);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(238, 23);
+            this.txtUsername.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 39);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(63, 15);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Username:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.txtAllMessages);
             this.Controls.Add(this.txtSendMessage);
             this.Controls.Add(this.btnSendMessage);
@@ -85,5 +118,8 @@ namespace ChatClient
         private Button btnSendMessage;
         private TextBox txtSendMessage;
         private TextBox txtAllMessages;
+        private Button btnConnect;
+        private TextBox txtUsername;
+        private Label label1;
     }
 }
