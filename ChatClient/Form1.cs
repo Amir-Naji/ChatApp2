@@ -4,12 +4,13 @@ namespace ChatClient;
 
 public partial class Form1 : Form
 {
-    private readonly IClientServer _cs = new ClientServer(new TcpClient());
+    private readonly IClientServer _cs;// = new ClientServer(new TcpClient());
     private delegate void SafeCallDelegate(string text);
 
-    public Form1()
+    public Form1(IClientServer clientServer)
     {
         InitializeComponent();
+        _cs = clientServer;
         txtSendMessage.Focus();
         txtSendMessage.Select();
     }

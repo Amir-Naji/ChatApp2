@@ -12,10 +12,8 @@ public class ChatClientTests
     [Test]
     public async Task ClientConnect_NoInput_True()
     {
-        await Init();
+        Init();
         client = new ClientServer(await server.Listener().AcceptTcpClientAsync());
-        //client.ConnectToServer();
-
         Assert.IsTrue(client.ClientConnect());
     }
 
@@ -51,7 +49,8 @@ public class ChatClientTests
     //    Assert.CatchAsync<InvalidOperationException>(() => server.ReceiveMessage(new TcpClient()));
     //}
 
-    private async Task Init()
+    private delegate void SafeCallDelegate(string text);
+    private void Init()
     {
         server = new RemoteServer();
         server.Start();
