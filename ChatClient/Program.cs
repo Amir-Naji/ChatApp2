@@ -13,7 +13,7 @@ namespace ChatClient
             _container = new Container();
 
             _container.Register<IClientServer, ClientServer>();
-            _container.Register<IConverters, Converters>();
+            _container.Register<IChatLog, ChatLog>();
 
             _container.Verify();
         }
@@ -28,7 +28,7 @@ namespace ChatClient
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            Application.Run(new Form1(new ClientServer(new TcpClient())));
+            Application.Run(new Form1(new ClientServer(new TcpClient(), new ChatLog())));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using ChatServer.Models;
+using Helpers;
 
 namespace ChatServer;
 
@@ -10,10 +11,12 @@ public class RemoteServer
     private readonly Dictionary<int, Client> _listClients = new();
     private readonly TcpListener _listener;
     private readonly object _lock = new object();
+    private readonly IChatLog _chatLog;
     private int _count;
 
-    public RemoteServer()
+    public RemoteServer(IChatLog chatLog)
     {
+        _chatLog = chatLog;
         _listener = new TcpListener(IPAddress.Any, 5000);
     }
 
@@ -49,8 +52,7 @@ public class RemoteServer
                 });
         }
 
-        // Log
-        Console.WriteLine("Someone connected!!");
+        _chatLog.LogInfo("Someone connected!!");
 
         var t = new Thread(HandleClients);
         t.Start(_count);
@@ -88,10 +90,9 @@ public class RemoteServer
             if (byteCount == 0) break;
 
             var data = Encoding.ASCII.GetString(buffer, 0, byteCount);
-            Broadcast(CheckMessage(data));
 
-            // Log
-            Console.WriteLine(data);
+            Broadcast(CheckMessage(data));
+            _chatLog.LogInfo(data);
         }
     }
 

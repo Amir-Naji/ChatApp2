@@ -1,9 +1,20 @@
-﻿namespace Helpers;
+﻿using Serilog;
+
+namespace Helpers;
 
 public class ChatLog: IChatLog
 {
-    public void Log(string test)
+    public ChatLog()
     {
-        throw new NotImplementedException();
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .WriteTo.File("Logs/logs.txt", rollingInterval:RollingInterval.Day)
+            .CreateLogger();
+    }
+
+    public void LogInfo(string test)
+    {
+        Log.Information(test);
     }
 }

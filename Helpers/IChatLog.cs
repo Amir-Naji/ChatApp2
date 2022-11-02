@@ -2,5 +2,5 @@
 
 public interface IChatLog
 {
-    void Log(string test);
+    void LogInfo(string test);
 }

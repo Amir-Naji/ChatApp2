@@ -12,8 +12,14 @@ public class ChatLogTests
     }
 
     [Test]
-    public void InformationLog_GoodString_()
+    public void LogInfo_GoodString_()
     {
-        _chatLog.Log("Test");
+        _chatLog.LogInfo("Test");
+        Assert.True(FindLogFile());
+    }
+
+    private static bool FindLogFile()
+    {
+        return Directory.Exists("Logs/");
     }
 }
