@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ChatServer.Models;
+using System.Threading;
 using Helpers;
 
 namespace ChatClient;
@@ -8,12 +10,12 @@ namespace ChatClient;
 public class ClientServer : IClientServer
 {
     private const int port = 5000;
-
-    private TcpClient _client;
-    private Thread _thread;
     private readonly IChatLog _chatLog;
 
+    private TcpClient _client;
+
     private Action<string> _safeCallDelegate;
+    private Thread _thread;
 
     public ClientServer(TcpClient client, IChatLog chatLog)
     {
@@ -21,17 +23,16 @@ public class ClientServer : IClientServer
         _chatLog = chatLog;
     }
 
-    public void ConnectToServer(string username)
+    public void TryConnectToServer(string username)
     {
-        var ip = IPAddress.Parse("127.0.0.1");
-        _client = new TcpClient();
-        if (!ClientConnect())
-            _client.Connect(ip, port);
-
-        CreateThread();
-
-        _chatLog.LogInfo($"{username} connected!!");
-        SendMessage($"Username>{username}");
+        try
+        {
+            ConnectToServer(username);
+        }
+        catch (Exception ex)
+        {
+            _chatLog.LogInfo(ex.Message);
+        }
     }
 
     public void SendMessage(string message)
@@ -49,6 +50,27 @@ public class ClientServer : IClientServer
     public void SetText(Action<string> safeCallDelegate)
     {
         _safeCallDelegate = safeCallDelegate;
+    }
+
+    public void Disconnect()
+    {
+        _client.Client.Shutdown(SocketShutdown.Send);
+        _thread.Join();
+        _client.Close();
+        _chatLog.LogInfo("disconnect from server!!");
+    }
+
+    private void ConnectToServer(string username)
+    {
+        var ip = IPAddress.Parse("127.0.0.1");
+        _client = new TcpClient();
+        if (!ClientConnect())
+            _client.Connect(ip, port);
+
+        CreateThread();
+
+        _chatLog.LogInfo($"{username} connected!!");
+        SendMessage($"Username>{username}");
     }
 
     private void CreateThread()

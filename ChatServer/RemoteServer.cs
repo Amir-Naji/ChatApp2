@@ -48,7 +48,7 @@ public class RemoteServer
                 _count,
                 new Client
                 {
-                    tcpClient = sender
+                    TcpClient = sender
                 });
         }
 
@@ -65,7 +65,7 @@ public class RemoteServer
 
         lock (_lock)
         {
-            client = _listClients[id].tcpClient;
+            client = _listClients[id].TcpClient;
         }
 
         ClientMessage(client);
@@ -116,7 +116,7 @@ public class RemoteServer
 
         lock (_lock)
         {
-            foreach (var stream in _listClients.Values.Select(c => c.tcpClient.GetStream()))
+            foreach (var stream in _listClients.Values.Select(c => c.TcpClient.GetStream()))
                 stream.Write(buffer, 0, buffer.Length);
         }
     }

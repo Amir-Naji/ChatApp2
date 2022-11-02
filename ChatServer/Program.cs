@@ -3,5 +3,5 @@
 using ChatServer;
 using Helpers;
 
-var rs = new RemoteServer();
+var rs = new RemoteServer(new ChatLog());
 await rs.Start();

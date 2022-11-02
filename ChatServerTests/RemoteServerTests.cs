@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using ChatServer;
+using Helpers;
 
 namespace ChatServerTests;
 
@@ -18,7 +19,7 @@ public class RemoteServerTests
     [Test]
     public void Start_NoInput_False()
     {
-        _server = new RemoteServer();
+        _server = new RemoteServer(new ChatLog());
         _server.Start();
 
         Assert.IsFalse(_server.ServerConnect());
@@ -27,7 +28,7 @@ public class RemoteServerTests
     [Test]
     public void ServerConnect_NoStartServer_Exception()
     {
-        _server = new RemoteServer();
+        _server = new RemoteServer(new ChatLog());
         Assert.Throws<InvalidOperationException>(() => _server.ServerConnect());
     }
 
@@ -50,7 +51,7 @@ public class RemoteServerTests
 
     private async Task Init()
     {
-        _server = new RemoteServer();
+        _server = new RemoteServer(new ChatLog());
         await _server.Start();
     }
 }

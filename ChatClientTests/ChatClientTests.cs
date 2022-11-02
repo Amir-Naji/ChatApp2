@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using ChatClient;
 using ChatServer;
+using Helpers;
 
 namespace ChatClientTests;
 
@@ -13,7 +14,7 @@ public class ChatClientTests
     public async Task ClientConnect_NoInput_True()
     {
         Init();
-        client = new ClientServer(await server.Listener().AcceptTcpClientAsync());
+        client = new ClientServer(await server.Listener().AcceptTcpClientAsync(), new ChatLog());
         Assert.IsTrue(client.ClientConnect());
     }
 
@@ -52,7 +53,7 @@ public class ChatClientTests
     private delegate void SafeCallDelegate(string text);
     private void Init()
     {
-        server = new RemoteServer();
+        server = new RemoteServer(new ChatLog());
         server.Start();
     }
 }

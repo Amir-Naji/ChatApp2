@@ -4,7 +4,7 @@ namespace ChatServer.Models;
 
 public class Client
 {
-    public TcpClient tcpClient { get; set; }
+    public TcpClient TcpClient { get; set; }
 
     public string Username { get; set; }
 }

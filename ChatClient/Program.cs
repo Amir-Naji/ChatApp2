@@ -12,7 +12,7 @@ namespace ChatClient
         {
             _container = new Container();
 
-            _container.Register<IClientServer, ClientServer>();
+            //_container.Register<IClientServer, ClientServer>();
             _container.Register<IChatLog, ChatLog>();
 
             _container.Verify();
@@ -27,8 +27,9 @@ namespace ChatClient
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            var chatLog = new ChatLog();
 
-            Application.Run(new Form1(new ClientServer(new TcpClient(), new ChatLog())));
+            Application.Run(new Form1(new ClientServer(new TcpClient(), chatLog), chatLog));
         }
     }
 }
